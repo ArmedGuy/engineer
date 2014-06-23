@@ -1,0 +1,93 @@
+<div class="container">
+    <h1>Penalties <small>{{ filters }}</small></h1>
+
+    <ul class="nav nav-tabs">
+        <li ng-class="{active: banTypeFilter == 'kicks'}"><a href="" ng-click="typeFilter('kicks')">Kicks</a></li>
+        <li ng-class="{active: banTypeFilter == 'tempbans'}"><a href="" ng-click="typeFilter('tempbans')">Tempbans</a></li>
+        <li ng-class="{active: banTypeFilter == 'bans'}"><a href="" ng-click="typeFilter('bans')">Bans</a></li>
+    </ul>
+    <fieldset>
+        <legend>Filter</legend>
+        <form class="form-inline" role="form" ng-submit="applyFilter()">
+            <div class="form-group">
+                <label class="control-label" for="filterByGame">by game: </label>
+                <select class="form-control" ng-model="gameFilter" id="filterByGame" ng-options="game for game in games">
+                    <option value="">---select game---</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="filterByServer">by server: </label>
+                <select class="form-control" ng-model="serverFilter" id="filterByServer" ng-options="server.name for server in servers track by server.server_ident">
+                    <option value="">---select server---</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="filterByText">by text: </label>
+                <input class="form-control" type="text" id="filterByText" ng-model="textFilter" placeholder="ID/Name/IP/Reason" />
+            </div>
+
+            <input type="submit" value="Filter" class="btn btn-primary" />
+        </form>
+    </fieldset>
+
+    <table class="table table-striped" ng-if="banTypeFilter == 'kicks'">
+        <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Player IP</th>
+            <th>Reason</th>
+            <th>Submitted</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="penalty in penalties">
+            <td><a href="#/penalties/{{penalty.id}}">{{ penalty.player_name }}</a></td>
+            <td>{{ penalty.player_ip }}</td>
+            <td >{{ penalty.reason }}</td>
+            <td>{{ penalty.submitted | date:'medium' }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-striped" ng-if="banTypeFilter == 'tempbans'">
+        <thead>
+            <tr>
+                <th>Player Name</th>
+                <th>Player IP</th>
+                <th>Duration</th>
+                <th>Reason</th>
+                <th>Submitted</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="penalty in penalties">
+                <td><a href="#/penalties/{{penalty.id}}">{{ penalty.player_name }}</a></td>
+                <td>{{ penalty.player_ip }}</td>
+                <td>{{ penalty.duration }}</td>
+                <td>{{ penalty.reason }}</td>
+                <td>{{ penalty.submitted | date:'medium' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-striped" ng-if="banTypeFilter == 'bans'">
+        <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Player IP</th>
+            <th>Duration</th>
+            <th>Reason</th>
+            <th>Submitted</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="penalty in penalties">
+            <td><a href="#/penalties/{{penalty.id}}">{{ penalty.player_name }}</a></td>
+            <td>{{ penalty.player_ip }}</td>
+            <td>{{ penalty.duration }}</td>
+            <td>{{ penalty.reason }}</td>
+            <td>{{ penalty.submitted | date:'medium' }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
