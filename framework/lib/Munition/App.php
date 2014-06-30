@@ -1,6 +1,6 @@
 <?php
 namespace Munition;
-class App {
+class App extends \stdClass {
   public static $application = null;
 
   public $config = null;
@@ -10,9 +10,21 @@ class App {
   
   public $postprocess = null;
   public $type = "REQUEST_URI";
-  
-  function __construct($appFolder = "./app/", Router $router = null) {
-    
+
+  function __construct($manual = false) {
+      if($manual != true) {
+          $this->setup();
+          if(php_sapi_name() == 'cli' && MUNITION_ENV != "test") {
+              $this->cli->run();
+          }
+      }
+  }
+  public function setup() {
+    $this->configure();
+  }
+  public function configure($appFolder = "./app/", Router $router = null) {
+    $this->config = [];
+    $this->appFolder = $appFolder;
     spl_autoload_register(function($class) use ($appFolder) {
         $class = str_replace('\\', '/', $class);
         if(file_exists($appFolder . "/models/" . $class . '.php')) {
@@ -24,8 +36,7 @@ class App {
           return;
         }
     });
-    
-    $this->config = [];
+
     if(!file_exists($appFolder)) {
       throw new \InvalidArgumentException("Unable to access App directory");
     }
@@ -43,6 +54,8 @@ class App {
     $this->postprocess = new \Munition\PostProcessingEngine();
 
     static::$application = $this;
+
+    $this->cli = new \Munition\CLI();
     
   }
   
