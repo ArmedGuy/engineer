@@ -14,22 +14,10 @@ class PenaltiesController extends \Munition\AppController {
     function index($ctx) {
 
         $q = Penalty::get();
+        $q->order("id DESC");
         $q->limit(100);
         $q->offset(100 * (isset($_GET["page"]) && $_GET["page"] > 0 ?
             $_GET['page'] - 1 : 0));
-        if(isset($_GET["type"])) {
-            switch($_GET["type"]) {
-                case "kicks":
-                    $q->where(["type" => Penalty::TYPE_KICK]);
-                    break;
-                case "tempbans":
-                    $q->where(["type" => Penalty::TYPE_TEMPBAN]);
-                    break;
-                case "bans":
-                    $q->where(["type" => Penalty::TYPE_BAN]);
-                    break;
-            }
-        }
         if(isset($_GET["game"])) {
             $server_ids = array_map(function($i) {
                 return $i->id;
@@ -46,6 +34,10 @@ class PenaltiesController extends \Munition\AppController {
         if(isset($_GET["text"]) && $_GET["text"] != "") {
             $t = "%".$_GET["text"]."%";
             $q->where("player_id LIKE ? OR player_name LIKE ? OR player_ip LIKE ? OR comment LIKE ?", $t, $t, $t, $t);
+        }
+
+        if(isset($_GET["after"]) && $_GET["after"] != "") {
+            $q->where("id > ?", $_GET["after"]);
         }
 
         $p = $q->all;

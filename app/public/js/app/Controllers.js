@@ -7,7 +7,12 @@ EngineerControllers.controller("IndexController", ["$scope", "$http", function($
 }]);
 
 
-EngineerControllers.controller("SessionController", ["$scope", "$http", function($scope, $http) {
+EngineerControllers.controller("SiteController", ["$scope", "$http", function($scope, $http) {
+
+    $scope.penaltyReasons = [];
+    $http.get("penalty_reasons.json").success(function(data) {
+       $scope.penaltyReasons = data;
+    });
     $scope.loggedIn = false;
     $scope.username = "";
     $scope.password = "";
@@ -48,66 +53,98 @@ EngineerControllers.controller("SessionController", ["$scope", "$http", function
     };
 }]);
 
-EngineerControllers.controller("PenaltiesController", ["$scope", "Penalty", "Server",
-    function($scope, Penalty, Server) {
+EngineerControllers.controller("PenaltiesController", ["$scope", "$interval", "Penalty", "Server",
+    function($scope, $interval, Penalty, Server) {
 
-    $scope.banTypeFilter = 'kicks';
-    $scope.gameFilter = null;
-    $scope.serverFilter = null;
-    $scope.textFilter = "";
+        $scope.gameFilter = null;
+        $scope.serverFilter = null;
+        $scope.textFilter = "";
 
-    $scope.page = 1;
+        $scope.page = 1;
 
-    $scope.filters = "";
-    $scope.typeFilter = function(by) {
-        $scope.banTypeFilter = by;
-        $scope.applyFilter();
-    };
-    var queryFilter = {};
-    var compileFilter = function() {
-        var q = {};
-        var f = [];
-        if($scope.gameFilter != null) {
-            q.game = $scope.gameFilter;
-            f.push("game: " + $scope.gameFilter);
+        $scope.filters = "";
+
+        var queryFilter = {};
+        var compileFilter = function() {
+            var q = {};
+            var f = [];
+            if($scope.gameFilter != null) {
+                q.game = $scope.gameFilter;
+                f.push("game: " + $scope.gameFilter);
+            }
+
+            if($scope.serverFilter != null) {
+                $scope.gameFilter = null;
+
+                q = {};
+                q.server = $scope.serverFilter;
+                f = [];
+                f.push("server: " + $scope.serverFilter.name);
+            }
+            if($scope.textFilter != "") {
+                q.text = $scope.textFilter;
+                f.push("text: " + $scope.textFilter);
+            }
+            if(f.length > 0) {
+                $scope.filters = "filter by " + f.join(", ");
+            } else {
+                $scope.filters = "";
+            }
+
+            q.page = $scope.page;
+            $scope.filters = f.join(", ");
+
+            queryFilter = q;
         }
-        if($scope.serverFilter != null) {
-            $scope.gameFilter = null;
+        $scope.applyFilter = function() {
+            compileFilter();
+            $scope.penalties = Penalty.query(queryFilter);
+        };
+        $scope.servers = Server.query();
+        $scope.games = ["bf2", "cod4", "mw2"]; // TODO: compile game list from server list
 
-            q = {};
-            q.server = $scope.serverFilter.server_ident;
-            f = [];
-            f.push("server: " + $scope.serverFilter.name);
-        }
-        if($scope.textFilter != "") {
-            q.text = $scope.textFilter;
-            f.push("text: " + $scope.textFilter);
-        }
-        if(f.length > 0) {
-            $scope.filters = "filter by " + f.join(", ");
-        } else {
-            $scope.filters = "";
-        }
+        $scope.penalties = Penalty.query();
 
-        q.type = $scope.banTypeFilter;
-        q.page = $scope.page;
+        var updateLoop = $interval(function() {
+            compileFilter();
 
-        queryFilter = q;
-    }
-    $scope.applyFilter = function() {
-        compileFilter();
-        $scope.penalties = Penalty.query(queryFilter);
-    };
-    $scope.servers = Server.query();
-    $scope.games = ["bf2", "cod4", "mw2"]; // TODO: compile game list from server list
+            for(var i in $scope.penalties) {
+                $scope.penalties[i].isNew = false;
+            }
+            if($scope.penalties.length > 0) {
+                queryFilter.after = $scope.penalties[0].id;
+            } else {
+                queryFilter.after = 0;
+            }
+            Penalty.query(queryFilter, function(newPenalties) {
+                newPenalties = newPenalties.reverse(); // we want latest to be last because of unshift
+                for(var i = 0; i < newPenalties.length; i++)
+                {
+                    if($scope.penalties.length == 100) {
+                        $scope.penalties.pop();
+                        newPenalties[i].isNew = true;
+                        $scope.penalties.unshift(newPenalties[i]);
+                    } else {
+                        newPenalties[i].isNew = true;
+                        $scope.penalties.unshift(newPenalties[i]);
+                    }
+                }
+            });
+            queryFilter.after = 0;
+        }, 10000);
 
-    $scope.penalties = Penalty.query({ type : $scope.banTypeFilter });
+        $scope.$on("$destroy", function() {
+           $interval.cancel(updateLoop);
+        });
 }]);
 
 
 EngineerControllers.controller("PenaltyController", ["$scope", "$routeParams", "Penalty", "Server", "Admin",
     function($scope, $routeParams, Penalty, Server, Admin) {
         var id = $routeParams.id;
-
-        $scope.penalty = Penalty.get({id: id});
+        $scope.loaded = false;
+        $scope.penalty = {};
+        $scope.penalty = Penalty.get({id: id}, function() {
+            $scope.loaded = true;
+        });
     }]);

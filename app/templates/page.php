@@ -8,12 +8,13 @@
         <script src="app/public/js/angular.min.js"></script>
         <script src="app/public/js/angular-route.min.js"></script>
         <script src="app/public/js/angular-resource.min.js"></script>
+        <script src="app/public/js/chartjs.min.js"></script>
         <script src="app/public/js/app/EngineerApp.js"></script>
         <script src="app/public/js/app/Controllers.js"></script>
         <script src="app/public/js/app/Services.js"></script>
         <title>Engineer</title>
     </head>
-    <body ng-controller="SessionController">
+    <body ng-controller="SiteController">
         <nav class="navbar navbar-default navbar-static-top" role="navigation">
             <div class="container">
                 <div class="navbar-header">

@@ -25,4 +25,11 @@ class SiteController extends \Munition\AppController {
             self::render(["json" => ["loggedIn" => false]]);
         }
     }
+
+    function penalty_reasons() {
+        $reasons = array_map(function($i) {
+            return $i->toArray();
+        },PenaltyReason::all()->toArray());
+        self::render(["json" => $reasons]);
+    }
 }
