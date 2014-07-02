@@ -1,13 +1,13 @@
-var EngineerControllers = angular.module("EngineerControllers", [
-    "EngineerServices"
+var ptOSControllers = angular.module("ptOSControllers", [
+    "ptOSServices"
 ]);
 
-EngineerControllers.controller("IndexController", ["$scope", "$http", function($scope, $http) {
+ptOSControllers.controller("IndexController", ["$scope", "$http", function($scope, $http) {
 
 }]);
 
 
-EngineerControllers.controller("SiteController", ["$scope", "$http", function($scope, $http) {
+ptOSControllers.controller("SiteController", ["$scope", "$http", function($scope, $http) {
 
     $scope.penaltyReasons = [];
     $http.get("penalty_reasons.json").success(function(data) {
@@ -53,7 +53,7 @@ EngineerControllers.controller("SiteController", ["$scope", "$http", function($s
     };
 }]);
 
-EngineerControllers.controller("PenaltiesController", ["$scope", "$interval", "Penalty", "Server",
+ptOSControllers.controller("PenaltiesController", ["$scope", "$interval", "Penalty", "Server",
     function($scope, $interval, Penalty, Server) {
 
         $scope.gameFilter = null;
@@ -139,7 +139,7 @@ EngineerControllers.controller("PenaltiesController", ["$scope", "$interval", "P
 }]);
 
 
-EngineerControllers.controller("PenaltyController", ["$scope", "$routeParams", "Penalty", "Server", "Admin",
+ptOSControllers.controller("PenaltyController", ["$scope", "$routeParams", "Penalty", "Server", "Admin",
     function($scope, $routeParams, Penalty, Server, Admin) {
         var id = $routeParams.id;
         $scope.loaded = false;

@@ -1,9 +1,9 @@
-var EngineerApp = angular.module("EngineerApp", [
+var ptOSApp = angular.module("ptOSApp", [
     "ngRoute",
-    "EngineerControllers"
+    "ptOSControllers"
 ]);
 
-EngineerApp.filter('penaltyType', function() {
+ptOSApp.filter('penaltyType', function() {
    return function(input) {
        switch (input.toString()) {
            case "1":
@@ -19,7 +19,7 @@ EngineerApp.filter('penaltyType', function() {
        }
    }
 });
-EngineerApp.filter('penaltyDuration', function() {
+ptOSApp.filter('penaltyDuration', function() {
    return function(input) {
        var m = parseInt(input);
        if(m == 0) {
@@ -36,7 +36,7 @@ EngineerApp.filter('penaltyDuration', function() {
    }
 });
 
-EngineerApp.filter('penaltyReason', function() {
+ptOSApp.filter('penaltyReason', function() {
    return function(input, types) {
        for(var i in types) {
            if(types[i].reason_id == input) {
@@ -47,7 +47,7 @@ EngineerApp.filter('penaltyReason', function() {
    }
 });
 
-EngineerApp.config(['$routeProvider',
+ptOSApp.config(['$routeProvider',
     function($routeProvider) {
         $routeProvider.
             when('/', {

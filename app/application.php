@@ -1,5 +1,5 @@
 <?php
-class Engineer extends \Munition\App {
+class ptOS extends \Munition\App {
     public function setup() {
         parent::configure("./app/");
 
@@ -9,11 +9,11 @@ class Engineer extends \Munition\App {
         $this->db = new \DbModel\AppDbManager();
         $this->db->using("main" , [
             "user" => "root",
-            "db" => "engineer"
+            "db" => "ptos"
         ]);
 
         \DbModel\Base::$default_db = $this->db->main;
         \DbModel\Migration::register_cli_hooks($this->cli);
     }
 }
-return new Engineer();
+return new ptOS();
