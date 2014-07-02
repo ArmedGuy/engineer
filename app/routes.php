@@ -1,5 +1,5 @@
 <?php
-$r->scope("engineer", function($r) {
+$r->scope("ptOS", function($r) {
     $r->get("/", "site#index");
 
     $r->get("/session", "site#session");
