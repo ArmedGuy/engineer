@@ -8,12 +8,13 @@ class CreateEvents extends \DbModel\Migration {
             $t->integer("server_id");
             $t->integer("player_id");
 
-            $t->integer("event_id");
+            $t->string("type");
 
             $t->datetime("submitted");
         });
     }
 
     public function down() {
+        $this->deleteTable("events");
     }
 }

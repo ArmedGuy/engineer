@@ -6,9 +6,11 @@ class CreatePlayerUsernames extends \DbModel\Migration {
             $t->primary("id");
             $t->integer("player_id");
             $t->string("username");
+            $t->datetime("changed");
         });
     }
 
     public function down() {
+        $this->deleteTable("player_usernames");
     }
 }

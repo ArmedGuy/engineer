@@ -1,6 +1,6 @@
 <?php
 class Server extends \DbModel\Base {
     public function serialize() {
-        return $this->_values;
+        return array_diff_key($this->_values, ["auth_key" => ""]);
     }
 }

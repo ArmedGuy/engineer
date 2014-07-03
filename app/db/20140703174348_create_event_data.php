@@ -12,5 +12,6 @@ class CreateEventData extends \DbModel\Migration {
     }
 
     public function down() {
+        $this->deleteTable("event_data");
     }
 }

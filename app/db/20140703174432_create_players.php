@@ -13,5 +13,6 @@ class CreatePlayers extends \DbModel\Migration {
     }
 
     public function down() {
+        $this->deleteTable("players");
     }
 }

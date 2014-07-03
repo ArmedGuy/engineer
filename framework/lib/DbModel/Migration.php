@@ -9,7 +9,6 @@ class Migration {
             $time = array_shift($fParts);
 
             $class = \NamingConventions\to_pascal($fParts);
-            echo $file;
             include $dir . $file;
             $mig = new $class(\DbModel\Base::$default_db);
 

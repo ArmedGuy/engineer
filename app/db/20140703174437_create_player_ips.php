@@ -6,6 +6,7 @@ class CreatePlayerIps extends \DbModel\Migration {
             $t->primary("id");
             $t->integer("player_id");
             $t->string("ip");
+            $t->datetime("changed");
         });
     }
 

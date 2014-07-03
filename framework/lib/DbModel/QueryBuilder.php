@@ -110,7 +110,7 @@ class QueryBuilder extends \stdClass{
   public function create(array $params) {
     $this->reset();
     $this->_query["command"] = "INSERT INTO";
-    $this->_query["columns"] = implode(",", array_keys($params));
+    $this->_query["columns"] = "`".implode("`,`", array_keys($params))."`";
     $this->_query["values"] = array_values($params);
     $this->_execute("insert");
     return $this->_result;

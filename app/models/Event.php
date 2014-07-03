@@ -5,4 +5,10 @@ class Event extends \DbModel\Base {
         $this->belongsTo("player");
         $this->belongsTo("server");
     }
+
+    public function serialize() {
+        $rtn = $this->_values;
+        $rtn["data"] = $this->eventData;
+        return $rtn;
+    }
 }

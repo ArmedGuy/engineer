@@ -7,11 +7,14 @@ ptOSControllers.controller("IndexController", ["$scope", "$http", function($scop
 }]);
 
 
-ptOSControllers.controller("SiteController", ["$scope", "$http", function($scope, $http) {
+ptOSControllers.controller("SiteController", ["$scope", "$http", "$timeout", function($scope, $http, $timeout) {
 
-    $scope.penaltyReasons = [];
-    $http.get("penalty_reasons.json").success(function(data) {
-       $scope.penaltyReasons = data;
+    $scope.eventTypes = [];
+    $http.get("app/public/event-types.json").success(function(data) {
+        $scope.eventTypes = data;
+        $timeout(function() {
+            $scope.$broadcast("eventTypesLoaded");
+        }, 1000);
     });
     $scope.loggedIn = false;
     $scope.username = "";
@@ -52,91 +55,105 @@ ptOSControllers.controller("SiteController", ["$scope", "$http", function($scope
             });
     };
 }]);
-
-ptOSControllers.controller("PenaltiesController", ["$scope", "$interval", "Penalty", "Server",
-    function($scope, $interval, Penalty, Server) {
-
-        $scope.gameFilter = null;
-        $scope.serverFilter = null;
-        $scope.textFilter = "";
-
-        $scope.page = 1;
+ptOSControllers.controller("EventsController", ["$scope", "$interval", "Event",
+    function($scope, $interval, Event) {
+        $scope.$on("eventTypesLoaded", function() {
+            loadEvents();
+        });
 
         $scope.filters = "";
+        $scope.page = 1;
 
-        var queryFilter = {};
+        $scope.events = [];
+
+        var firstLoad = true;
+        var queryParams = {};
         var compileFilter = function() {
-            var q = {};
-            var f = [];
-            if($scope.gameFilter != null) {
-                q.game = $scope.gameFilter;
-                f.push("game: " + $scope.gameFilter);
+            if($scope.filters != "") {
+                $scope.filters = $scope.filters.trim();
+                if($scope.filters.indexOf(":") > -1) {
+                    var parts = $scope.filters.split(":");
+                    queryParams[parts[0].trim()] = parts[1].trim();
+                }
             }
-
-            if($scope.serverFilter != null) {
-                $scope.gameFilter = null;
-
-                q = {};
-                q.server = $scope.serverFilter;
-                f = [];
-                f.push("server: " + $scope.serverFilter.name);
-            }
-            if($scope.textFilter != "") {
-                q.text = $scope.textFilter;
-                f.push("text: " + $scope.textFilter);
-            }
-            if(f.length > 0) {
-                $scope.filters = "filter by " + f.join(", ");
-            } else {
-                $scope.filters = "";
-            }
-
-            q.page = $scope.page;
-            $scope.filters = f.join(", ");
-
-            queryFilter = q;
         }
-        $scope.applyFilter = function() {
-            compileFilter();
-            $scope.penalties = Penalty.query(queryFilter);
-        };
-        $scope.servers = Server.query();
-        $scope.games = ["bf2", "cod4", "mw2"]; // TODO: compile game list from server list
 
-        $scope.penalties = Penalty.query();
+        $scope.filter = function() {
+            compileFilter();
+            $scope.events = [];
+            firstLoad = true;
+            loadEvents();
+        }
+
+        var loadEvents = function() {
+            Event.query(queryParams, function(data) {
+                data = data.reverse(); // we want it in reverse order if we are filling
+                for(var i = 0; i < data.length; i++) {
+                    var e = data[i];
+                    if(firstLoad != true)
+                        e.isNew = true;
+                    e.loaded = false;
+                    if($scope.eventTypes.indexOf(e.type) > -1) {
+                        e.templateUrl = "app/public/partials/events/event-" + e.type + ".html";
+                    } else {
+                        e.templateUrl = "app/public/partials/events/event-default.html";
+                    }
+                    if($scope.events.length == 30) {
+                        $scope.events.pop();
+                        $scope.events.unshift(e);
+                    } else {
+                        $scope.events.unshift(e);
+                    }
+                    e.loaded = true;
+                }
+                if(firstLoad)
+                    firstLoad = false;
+            });
+        }
 
         var updateLoop = $interval(function() {
-            compileFilter();
-
-            for(var i in $scope.penalties) {
-                $scope.penalties[i].isNew = false;
+            for(var i in $scope.events) {
+                $scope.events[i].isNew = false;
             }
-            if($scope.penalties.length > 0) {
-                queryFilter.after = $scope.penalties[0].id;
+            if($scope.events.length > 0) {
+                queryParams.after = $scope.events[0].id;
             } else {
-                queryFilter.after = 0;
+                queryParams.after = 0;
             }
-            Penalty.query(queryFilter, function(newPenalties) {
-                newPenalties = newPenalties.reverse(); // we want latest to be last because of unshift
-                for(var i = 0; i < newPenalties.length; i++)
-                {
-                    if($scope.penalties.length == 100) {
-                        $scope.penalties.pop();
-                        newPenalties[i].isNew = true;
-                        $scope.penalties.unshift(newPenalties[i]);
-                    } else {
-                        newPenalties[i].isNew = true;
-                        $scope.penalties.unshift(newPenalties[i]);
-                    }
-                }
-            });
-            queryFilter.after = 0;
+            loadEvents();
+            queryParams.after = 0;
         }, 10000);
 
+
         $scope.$on("$destroy", function() {
-           $interval.cancel(updateLoop);
+            $interval.cancel(updateLoop);
         });
-}]);
+    }]);
+
+ptOSControllers.controller("PlayersController", ["$scope", "$interval", "Event", "Player", "Server",
+    function($scope, $interval, Event, Player, Server) {
+        $scope.filters = "";
+        $scope.page = 1;
+
+        $scope.players = [];
+
+        var queryParams = {};
+        var compileFilter = function() {
+            $scope.filters = $scope.filters.trim();
+            if(":" in $scope.filters) {
+                var parts = $scope.filters.split(":");
+                queryParams[parts[0]] = parts[1];
+            }
+        }
+
+        $scope.filter = function() {
+            compileFilter();
+            $scope.players = Player.query(queryParams);
+        }
+        $scope.players = Player.query(queryParams);
+    }]);
+
+
 
 
 ptOSControllers.controller("PenaltyController", ["$scope", "$routeParams", "Penalty", "Server", "Admin",

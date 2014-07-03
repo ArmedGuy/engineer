@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <link href="app/public/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+        <link href="app/public/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
         <link href="app/public/css/angular-csp.css" type="text/css" rel="stylesheet" />
         <link href="app/public/css/style.css" type="text/css" rel="stylesheet" />
         <script src="app/public/js/angular.min.js"></script>
@@ -21,9 +22,8 @@
                     <a class="navbar-brand" href="#/">ptOS</a>
                 </div>
                 <ul class="nav navbar-nav ng-cloak" ng-if="loggedIn">
-                    <li><a href="#/penalties/">Penalties</a></li>
-                    <li><a href="#/servers/">Servers</a></li>
-                    <li><a href="#/admins/">Admins</a></li>
+                    <li><a href="#/events/">Event Stream</a></li>
+                    <li><a href="#/players/">Players</a></li>
                 </ul>
                 <form class="navbar-form navbar-right" ng-submit="login()" ng-show="!loggedIn && sessionChecked">
                     <div class="form-group">
