@@ -1,0 +1,8 @@
+<?php
+class Player extends \DbModel\Base {
+    function relations() {
+        $this->hasMany("player_ips");
+        $this->hasMany("player_usernames");
+        $this->hasMany("events");
+    }
+}
