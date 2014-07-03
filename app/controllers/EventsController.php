@@ -29,7 +29,8 @@ class EventsController extends \Munition\AppController {
                 $rtn["data"][$d["key"]] = $d["value"];
             }
             // get player and server
-            $rtn["player"] = Player::find($a->player_id)->obj()->serialize();
+            if(!isset($_GET["noPlayer"]))
+                $rtn["player"] = Player::find($a->player_id)->obj()->serialize();
             $rtn["server"] = Server::find($a->server_id)->obj()->serialize();
 
             return $rtn;

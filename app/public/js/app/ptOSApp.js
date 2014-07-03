@@ -14,6 +14,10 @@ ptOSApp.config(['$routeProvider',
                 templateUrl: 'app/public/partials/events-list.html',
                 controller: 'EventsController'
             }).
+            when('/players/:playerId', {
+                templateUrl: 'app/public/partials/player-info.html',
+                controller: 'PlayerController'
+            }).
             when('/players', {
                 templateUrl: 'app/public/partials/players-list.html',
                 controller: 'PlayersController'

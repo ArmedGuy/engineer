@@ -1,0 +1,16 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Player {{ player.guid }}</h3>
+            <hr/>
+            <h4>Latest Username: {{ player.latest_username }}</h4>
+            <h4>Latest IP: {{ player.latest_ip }}</h4>
+        </div>
+        <div class="col-md-6">
+            <h3>Event Stream</h3>
+            <hr/>
+            <div ng-repeat="event in events" ng-show="event.loaded" class="event-feed-item" ng-include="event.templateUrl">
+            </div>
+        </div>
+    </div>
+</div>
