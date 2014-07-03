@@ -57,9 +57,6 @@ ptOSControllers.controller("SiteController", ["$scope", "$http", "$timeout", fun
 }]);
 ptOSControllers.controller("EventsController", ["$scope", "$interval", "Event",
     function($scope, $interval, Event) {
-        $scope.$on("eventTypesLoaded", function() {
-            loadEvents();
-        });
 
         $scope.filters = "";
         $scope.page = 1;
@@ -128,6 +125,8 @@ ptOSControllers.controller("EventsController", ["$scope", "$interval", "Event",
         $scope.$on("$destroy", function() {
             $interval.cancel(updateLoop);
         });
+
+        loadEvents();
     }]);
 
 ptOSControllers.controller("PlayersController", ["$scope", "$interval", "Event", "Player", "Server",
