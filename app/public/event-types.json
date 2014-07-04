@@ -2,5 +2,7 @@
     "joined",
     "left",
     "kicked",
-    "banned"
+    "banned",
+    "ipchanged",
+    "namechanged"
 ]
