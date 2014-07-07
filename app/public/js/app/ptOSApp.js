@@ -1,9 +1,15 @@
-var ptOSApp = angular.module("ptOSApp", [
+var ptOSApp = angular.module("ptOS", [
     "ngRoute",
-    "ptOSControllers"
+    "ngResource"
 ]);
 
-ptOSApp.config(['$routeProvider',
+angular.module("ptOS").filter("timeAgo", function() {
+    return function(dateString) {
+        return moment(dateString).fromNow();
+    }
+});
+
+angular.module("ptOS").config(['$routeProvider',
     function($routeProvider) {
         $routeProvider.
             when('/', {

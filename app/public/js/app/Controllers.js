@@ -1,13 +1,9 @@
-var ptOSControllers = angular.module("ptOSControllers", [
-    "ptOSServices"
-]);
-
-ptOSControllers.controller("IndexController", ["$scope", "$http", function($scope, $http) {
+angular.module("ptOS").controller("IndexController", ["$scope", "$http", function($scope, $http) {
 
 }]);
 
 
-ptOSControllers.controller("SiteController", ["$scope", "$http", "$timeout", function($scope, $http, $timeout) {
+angular.module("ptOS").controller("SiteController", ["$scope", "$http", "$timeout", function($scope, $http, $timeout) {
 
     $scope.eventTypes = [];
     $http.get("app/public/event-types.json").success(function(data) {
@@ -55,7 +51,7 @@ ptOSControllers.controller("SiteController", ["$scope", "$http", "$timeout", fun
             });
     };
 }]);
-ptOSControllers.controller("EventsController", ["$scope", "$interval", "Event",
+angular.module("ptOS").controller("EventsController", ["$scope", "$interval", "Event",
     function($scope, $interval, Event) {
 
         $scope.filters = "";
@@ -105,6 +101,9 @@ ptOSControllers.controller("EventsController", ["$scope", "$interval", "Event",
                 }
                 if(firstLoad)
                     firstLoad = false;
+
+
+                $scope.$digest();
             });
         }
 
@@ -129,7 +128,7 @@ ptOSControllers.controller("EventsController", ["$scope", "$interval", "Event",
         loadEvents();
     }]);
 
-ptOSControllers.controller("PlayersController", ["$scope", "$interval", "Event", "Player", "Server",
+angular.module("ptOS").controller("PlayersController", ["$scope", "$interval", "Event", "Player", "Server",
     function($scope, $interval, Event, Player, Server) {
         $scope.filters = "";
         $scope.page = 1;
@@ -152,7 +151,7 @@ ptOSControllers.controller("PlayersController", ["$scope", "$interval", "Event",
         $scope.players = Player.query(queryParams);
     }]);
 
-ptOSControllers.controller("PlayerController", ["$scope", "$routeParams", "Player", "Event", "$interval",
+angular.module("ptOS").controller("PlayerController", ["$scope", "$routeParams", "Player", "Event", "$interval",
     function($scope, $routeParams, Player, Event, $interval) {
         $scope.events = [];
 
@@ -187,6 +186,8 @@ ptOSControllers.controller("PlayerController", ["$scope", "$routeParams", "Playe
                 }
                 if(firstLoad)
                     firstLoad = false;
+
+                $scope.$digest();
             });
         }
         var updateLoop = $interval(function() {
@@ -198,7 +199,8 @@ ptOSControllers.controller("PlayerController", ["$scope", "$routeParams", "Playe
             } else {
                 eventQueryParams.after = 0;
             }
-            $scope.player = Player.get({ id: playerId }, function() {
+            Player.get({ id: playerId }, function(data) {
+                $scope.player = data;
                 loadEvents();
                 eventQueryParams.after = 0;
             });
@@ -206,17 +208,5 @@ ptOSControllers.controller("PlayerController", ["$scope", "$routeParams", "Playe
 
         $scope.$on("$destroy", function() {
             $interval.cancel(updateLoop);
-        });
-    }]);
-
-
-
-ptOSControllers.controller("PenaltyController", ["$scope", "$routeParams", "Penalty", "Server", "Admin",
-    function($scope, $routeParams, Penalty, Server, Admin) {
-        var id = $routeParams.id;
-        $scope.loaded = false;
-        $scope.penalty = {};
-        $scope.penalty = Penalty.get({id: id}, function() {
-            $scope.loaded = true;
         });
     }]);

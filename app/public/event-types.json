@@ -4,5 +4,6 @@
     "kicked",
     "banned",
     "ipchanged",
-    "namechanged"
+    "namechanged",
+    "sayall"
 ]

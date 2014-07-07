@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="ptOSApp">
+<html lang="en" ng-app="ptOS">
     <head>
         <meta charset="utf-8" />
         <link href="app/public/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
@@ -10,6 +10,7 @@
         <script src="app/public/js/angular-route.min.js"></script>
         <script src="app/public/js/angular-resource.min.js"></script>
         <script src="app/public/js/chartjs.min.js"></script>
+        <script src="app/public/js/moment.min.js"></script>
         <script src="app/public/js/app/ptOSApp.js"></script>
         <script src="app/public/js/app/Controllers.js"></script>
         <script src="app/public/js/app/Services.js"></script>

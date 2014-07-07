@@ -3,13 +3,13 @@ namespace DbModel;
 class MigrationTable {
   public $name;
   private $_columns;
-  private $_primary;
+  private $_keys;
   private $_storage;
 
   public function __construct($name, $storage = "InnoDB") {
     $this->name = $name;
     $this->_columns = [];
-    $this->_primary = null;
+    $this->_keys = [];
     $this->_storage = $storage;
   }
   public function addColumn($type, $name, array $options) {
@@ -52,8 +52,12 @@ class MigrationTable {
   }
 
   public function primary($name) {
-    $this->_primary = $name;
+    $this->_keys[$name] = "primary";
     $this->_columns[$name]["ai"] = true;
+  }
+
+  public function index($name) {
+    $this->_keys[$name] = "index";
   }
 
   public function getSQL() {
@@ -70,17 +74,31 @@ class MigrationTable {
         $sql .= " NOT NULL";
       }
 
-      if(isset($opt["ai"])) {
+      if(isset($opt["ai"]) && strpos($opt["type"], "int") !== false) {
         $sql .= " AUTO_INCREMENT";
       }
 
       if(isset($opt["default"])) {
-        $sql .= " DEFAULT '{$opt['default']}''";
+        $sql .= " DEFAULT '{$opt['default']}";
       }
       $sql .= ",";
     }
-    if($this->_primary != null) {
-      $sql .= " PRIMARY KEY ({$this->_primary})";
+    $keys = [];
+    foreach($this->_keys as $key=>$type) {
+      switch($type) {
+        case "primary":
+          $keys[] = "PRIMARY KEY (`{$key}`)";
+          break;
+        case "unique":
+          $keys[] = "UNIQUE KEY (`{$key}`)";
+          break;
+        case "index":
+          $keys[] = "INDEX (`{$key}`)";
+          break;
+      }
+    }
+    if(count($keys) > 0) {
+      $sql .= implode(", ", $keys);
     } else {
       $sql = substr($sql, 0, strlen($sql)-1);
     }

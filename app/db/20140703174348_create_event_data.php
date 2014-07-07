@@ -6,6 +6,8 @@ class CreateEventData extends \DbModel\Migration {
             $t->primary("id");
 
             $t->integer("event_id");
+            $t->index("event_id");
+
             $t->string("key");
             $t->string("value");
         });

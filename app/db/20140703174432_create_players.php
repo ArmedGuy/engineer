@@ -6,6 +6,7 @@ class CreatePlayers extends \DbModel\Migration {
             $t->primary("id");
 
             $t->string("guid");
+            $t->index("guid");
 
             $t->string("latest_username");
             $t->string("latest_ip");

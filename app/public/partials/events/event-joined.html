@@ -1,13 +1,10 @@
-<div class="row event-small">
-    <div class="col-sm-1">
-        <div class="event-feed-icon" style="background-color:forestgreen;"></div>
-    </div>
-    <div class="col-sm-8">
-        <p>
-            <span class="label label-info" ng-show="event.isNew">New</span> <b><a ng-href="#/players/{{event.player.id}}">{{ event.player.latest_username }}</a></b> joined <b>{{ event.server.name }}</b>
-        </p>
-    </div>
-    <div class="col-sm-3">
-        <p class="pull-right">{{ event.submitted }}</p>
-    </div>
-</div>
+<td><div class="event-feed-icon" style="background-color:forestgreen;"></div></td>
+<td>
+    <p>
+        <span class="label label-info" ng-show="event.isNew">New</span>
+        <b><a ng-href="#/players/{{event.player.id}}">{{ event.player.latest_username }}</a></b> joined <b>{{ event.server.name }}</b>
+    </p>
+</td>
+<td>
+    <p class="timestamp">{{ event.submitted | timeAgo }}</p>
+</td>

@@ -6,9 +6,13 @@ class CreateEvents extends \DbModel\Migration {
             $t->primary("id");
 
             $t->integer("server_id");
+            $t->index("server_id");
+
             $t->integer("player_id");
+            $t->index("player_id");
 
             $t->string("type");
+            $t->index("type");
 
             $t->datetime("submitted");
         });

@@ -10,7 +10,8 @@
       </div>
     </form>
     <hr/>
-
-    <div ng-repeat="event in events" ng-show="event.loaded" class="event-feed-item" ng-include="event.templateUrl">
-    </div>
+    <table class="table events">
+        <tr ng-repeat="event in events" ng-show="event.loaded" class="event-feed-item" ng-include="event.templateUrl">
+        </tr>
+    </table>
 </div>
