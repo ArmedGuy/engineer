@@ -4,19 +4,33 @@ class EventsController extends \Munition\AppController {
         // show latest events
 
         $q = Event::get();
-        $q->limit(30);
+        $max = isset($_GET["max"]) ? (int)$_GET["max"] : 30;
+        $q->limit($max);
         $q->order("id DESC");
+        $q->select("events.*");
 
         $page = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
-        $q->offset(($page-1) * 30);
+        $q->offset(($page-1) * $max);
 
-        if(isset($_GET["player"])) {
-            $q->where(["player_id" => $_GET["player"]]);
+        if(isset($_GET["player_id"])) {
+            $q->where(["player_id" => $_GET["player_id"]]);
         }
 
         if(isset($_GET["after"])) {
             $q->where("id > ?", $_GET["after"]);
         }
+
+        /* search params */
+        if(isset($_GET["server"])) {
+          $q->joins("servers")->where("servers.name LIKE ?", "%" . $_GET["server"] . "%");
+        }
+        if(isset($_GET["type"])) {
+          $q->where(["type" => $_GET['type']]);
+        }
+        if(isset($_GET["data"])) {
+          $q->joins("event_data")->where("event_data.value LIKE ?", "%" . $_GET["data"] . "%");
+        }
+        /* end search params */
 
         $events = array_map(function($a) {
             $rtn = $a->toArray();

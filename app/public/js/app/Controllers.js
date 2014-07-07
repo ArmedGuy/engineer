@@ -62,6 +62,7 @@ angular.module("ptOS").controller("EventsController", ["$scope", "$interval", "E
         var firstLoad = true;
         var queryParams = {};
         var compileFilter = function() {
+            queryParams = {};
             if($scope.filters != "") {
                 $scope.filters = $scope.filters.trim();
                 if($scope.filters.indexOf(":") > -1) {
@@ -128,8 +129,8 @@ angular.module("ptOS").controller("EventsController", ["$scope", "$interval", "E
         loadEvents();
     }]);
 
-angular.module("ptOS").controller("PlayersController", ["$scope", "$interval", "Event", "Player", "Server",
-    function($scope, $interval, Event, Player, Server) {
+angular.module("ptOS").controller("PlayersController", ["$scope", "$interval", "Event", "Player",
+    function($scope, $interval, Event, Player) {
         $scope.filters = "";
         $scope.page = 1;
 
@@ -137,10 +138,13 @@ angular.module("ptOS").controller("PlayersController", ["$scope", "$interval", "
 
         var queryParams = {};
         var compileFilter = function() {
-            $scope.filters = $scope.filters.trim();
-            if(":" in $scope.filters) {
-                var parts = $scope.filters.split(":");
-                queryParams[parts[0]] = parts[1];
+            queryParams = {};
+            if($scope.filters != "") {
+                $scope.filters = $scope.filters.trim();
+                if($scope.filters.indexOf(":") > -1) {
+                    var parts = $scope.filters.split(":");
+                    queryParams[parts[0].trim()] = parts[1].trim();
+                }
             }
         }
 
@@ -161,7 +165,7 @@ angular.module("ptOS").controller("PlayerController", ["$scope", "$routeParams",
         });
         // Player event stream
         var firstLoad = true;
-        var eventQueryParams = { player: playerId, noPlayer: true };
+        var eventQueryParams = { player_id: playerId, noPlayer: true, max: 10 };
         var loadEvents = function() {
             Event.query(eventQueryParams, function(data) {
                 data = data.reverse(); // we want it in reverse order if we are filling
@@ -176,7 +180,7 @@ angular.module("ptOS").controller("PlayerController", ["$scope", "$routeParams",
                     } else {
                         e.templateUrl = "app/public/partials/events/event-default.html";
                     }
-                    if($scope.events.length == 30) {
+                    if($scope.events.length == 10) {
                         $scope.events.pop();
                         $scope.events.unshift(e);
                     } else {

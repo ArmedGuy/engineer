@@ -1,0 +1,29 @@
+<div class="container">
+    <h1>Players</h1>
+    <form role="form" ng-submit="filter()">
+      <label for="filterByText" class="sr-only">Filter query</label>
+      <div class="input-group">
+        <input class="form-control" type="text" id="filterByText" ng-model="filters" placeholder="filter:" />
+        <span class="input-group-btn">
+          <button class="btn btn-primary">Filter</button>
+        </span>
+      </div>
+    </form>
+    <hr/>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Guid</th>
+                <th>Username</th>
+                <th>Latest IP</th>
+                <th>Last seen</th>
+            </tr>
+        </thead>
+        <tr ng-repeat="player in players">
+            <td><a ng-href="#/players/{{ player.id }}">{{ player.guid }}</a></td>
+            <td>{{ player.latest_username }} <span class="label label-default" ng-if="player.names.length>1">{{ player.names.length-1 }} more</span></td>
+            <td>{{ player.latest_ip }} <span class="label label-default" ng-if="player.ips.length>1">{{ player.ips.length-1 }} more</span></td>
+            <td>{{ player.last_seen | timeAgo }}</td>
+        </tr>
+    </table>
+</div>
