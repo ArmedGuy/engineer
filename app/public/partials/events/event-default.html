@@ -1,15 +1,9 @@
-<div class="row">
-    <div class="col-sm-1">
-        <div class="event-feed-icon"></div>
-    </div>
-    <div class="col-sm-8">
+<td><div class="event-feed-icon"></div></td>
+<td>
         <p>
             <span class="label label-info" ng-show="event.isNew">New</span>
             <b><a ng-href="#/players/{{event.player.id}}">{{ event.player.latest_username }}</a></b> on <b>{{ event.server.name }}</b>
             triggered an event of type <b>{{ event.type }}</b>
         </p>
-    </div>
-    <div class="col-sm-3">
-        <p class="timestamp">{{ event.submitted | timeAgo }}</p>
-    </div>
-</div>
+</td>
+<td><p class="timestamp">{{ event.submitted | timeAgo }}</p></td>

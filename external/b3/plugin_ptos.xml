@@ -1,0 +1,7 @@
+<configuration plugin="ptos">
+    <settings name="ptos">
+        <set name="url">http://localhost/ptOS/api/register_event</set>
+		<set name="server_guid">us_cod4_2</set>
+		<set name="server_key">daman</set>
+    </settings>
+</configuration>
