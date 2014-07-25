@@ -4,11 +4,17 @@ class PlayersController extends \Munition\AppController {
         $q = Player::get();
         $q->limit(100);
         $q->select("players.*");
+        $q->order("id DESC");
+        $q->group("id");
 
         $page = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
         $q->offset(($page-1) * 30);
 
-
+        if(isset($_GET["text"])) {
+          $q->where("guid = ?", $_GET["text"]);
+          $_GET["name"] = $_GET["text"];
+          $_GET["ip"] = $_GET["text"];
+        }
         /* search params */
         if(isset($_GET["name"])) {
             $q->joins("player_usernames")->where("player_usernames.username LIKE ?", "%".$_GET["name"]."%");
@@ -16,6 +22,7 @@ class PlayersController extends \Munition\AppController {
         if(isset($_GET["ip"])) {
             $q->joins("player_ips")->where("player_ips.ip LIKE ?", "%".$_GET["ip"]."%");
         }
+
         /* end search params */
 
         $players = array_map(function($p) {

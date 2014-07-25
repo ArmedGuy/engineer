@@ -144,6 +144,8 @@ angular.module("ptOS").controller("PlayersController", ["$scope", "$interval", "
                 if($scope.filters.indexOf(":") > -1) {
                     var parts = $scope.filters.split(":");
                     queryParams[parts[0].trim()] = parts[1].trim();
+                } else {
+                    queryParams["text"] = $scope.filters;
                 }
             }
         }
