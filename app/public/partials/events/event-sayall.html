@@ -1,9 +1,8 @@
-<td><div class="event-feed-icon icon-large"></div></td>
+<td><div class="event-feed-icon" style="background-color: #c0a16b;"></div></td>
 <td>
     <p>
         <span class="label label-info" ng-show="event.isNew">New</span>
-        <b><a ng-href="#/players/{{event.player.id}}">{{ event.player.latest_username }}</a></b> on <b>{{ event.server.name }}</b><br/>
-        <blockquote>{{ event.data.text }}</blockquote>
+        <b><a ng-href="#/players/{{event.player.id}}">{{ event.player.latest_username }}</a></b> on <b>{{ event.server.name }}</b>: &quot;{{ event.data.text }}&quot;<br/>
     </p>
 </td>
 <td>

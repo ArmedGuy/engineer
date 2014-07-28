@@ -81,6 +81,31 @@ class QueryBuilder extends \stdClass{
     $this->_execute();
     return $this->_result;
   }
+
+  public function sql() {
+    if(func_num_args() == 1) {
+      $stmt = $this->_db->query(func_get_arg(0));
+
+      $this->_result = [];
+      while($res = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        $this->_result[] = new QueryRow($res, $this->_className);
+      }
+      $this->_result = new QueryResult($this->_result);
+    } else {
+      $params = func_get_args(0);
+      unset($params[0]);
+      $stmt = $this->_db->prepare(func_get_arg(0));
+      $stmt->execute($params);
+
+      $this->_result = [];
+      while($res = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        $this->_result[] = new QueryRow($res, $this->_className);
+      }
+      $this->_result = new QueryResult($this->_result);
+    }
+    return $this->_result;
+  }
+
   public function first($num = 1) {
     $this->_query["command"] = "SELECT";
     $this->_query["limit"] = $num;
@@ -286,7 +311,6 @@ class QueryBuilder extends \stdClass{
         throw new DbError("Unsupported SQL command!");
     }
   }
-  
   private function _execute($type="select") {
     switch($type) {
       case "select":        
@@ -522,6 +546,8 @@ class QueryBuilder extends \stdClass{
   }
   
   private function _vlist(array $value) {
+    if(count($value) == 0)
+      return "(NULL)";
     return "(". implode(",", array_fill(0, count($value), "?")) .")";
   }
   

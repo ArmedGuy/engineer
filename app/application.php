@@ -14,6 +14,21 @@ class ptOS extends \Munition\App {
 
         \DbModel\Base::$default_db = $this->db->main;
         \DbModel\Migration::register_cli_hooks($this->cli);
+
+        Scripts::register("bootstrap", [
+          "app/public/js/jquery.min.js",
+          "app/public/js/angular.min.js",
+          "app/public/js/angular-resource.min.js",
+          "app/public/js/angular-route.min.js",
+          "app/public/js/bootstrap.min.js",
+          "app/public/js/chartjs.min.js",
+          "app/public/js/moment.min.js",
+          "app/public/js/app.js"
+        ]);
+
+        Scripts::register("app", [
+          "app/public/js/app/"
+        ]);
     }
 }
 return new ptOS();

@@ -42,6 +42,9 @@
     font-size: 12px;
     padding: 6px 18px;
 }
+.events p {
+    margin: 0px;
+}
 .events .timestamp {
     min-width: 85px;
     text-align: right;

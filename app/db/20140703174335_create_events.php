@@ -14,7 +14,7 @@ class CreateEvents extends \DbModel\Migration {
             $t->string("type");
             $t->index("type");
 
-            $t->datetime("submitted");
+            $t->timestamp("submitted");
         });
     }
 

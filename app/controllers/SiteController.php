@@ -20,16 +20,9 @@ class SiteController extends \Munition\AppController {
 
     function session() {
         if(Session::logged_in()) {
-            self::render(["json" => ["loggedIn" => true, "username" => Session::$account->username]]);
+            self::render(["json" => ["loggedIn" => true, "username" => Session::$account->username, "type" => Session::$account->type]]);
         } else {
             self::render(["json" => ["loggedIn" => false]]);
         }
-    }
-
-    function penalty_reasons() {
-        $reasons = array_map(function($i) {
-            return $i->toArray();
-        },PenaltyReason::all()->toArray());
-        self::render(["json" => $reasons]);
     }
 }

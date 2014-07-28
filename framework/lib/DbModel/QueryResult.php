@@ -38,6 +38,13 @@ class QueryResult extends \ArrayObject {
   public function toArray() {
       return $this->getArrayCopy();
   }
+
+  public function toRowsArray() {
+    return array_map(function($r) {
+      return $r->toArray();
+    }, $this->toArray());
+  }
+
   public function first($num) {
     return array_slice($this->getArrayCopy(), 0, $num);
   }

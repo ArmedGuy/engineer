@@ -16,9 +16,9 @@ class Session {
 
     public static function developer() {
         if(static::logged_in()) {
-            if(Session::$account->type == 2) {
-
-            }
+            return Session::$account->type == Admin::TYPE_DEVELOPER;
+        } else {
+          return false;
         }
     }
 

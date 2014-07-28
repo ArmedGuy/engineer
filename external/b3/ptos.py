@@ -24,6 +24,8 @@ class PtosPlugin( b3.plugin.Plugin ):
         self.registerEvent(b3.events.EVT_CLIENT_PRIVATE_SAY)
         self.registerEvent(b3.events.EVT_CLIENT_CONNECT)
         self.registerEvent(b3.events.EVT_CLIENT_DISCONNECT)
+        self.registerEvent(b3.events.EVT_CLIENT_KICK)
+        self.registerEvent(b3.events.EVT_CLIENT_BAN)
         
     def onEvent(self, event):
         if not event.client or event.client.cid == None:
@@ -37,9 +39,9 @@ class PtosPlugin( b3.plugin.Plugin ):
         if event.type == b3.events.EVT_CLIENT_DISCONNECT:
             self.send_event('left', event.client)
         if event.type == b3.events.EVT_CLIENT_KICK:
-            self.send_event('kicked', event.client, { 'reason': event.data.reason })
+            self.send_event('kicked', event.client, { 'reason': event.data })
         if event.type == b3.events.EVT_CLIENT_BAN:
-            self.send_event('banned', event.client, { 'reason': event.data.reason })
+            self.send_event('banned', event.client, { 'reason': event.data['reason'] })
         
     def send_event(self, type, client, data={}):
         params = []

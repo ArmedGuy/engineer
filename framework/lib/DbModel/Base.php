@@ -108,7 +108,7 @@ class Base {
       }
     }
     if(in_array($method, ["all", "first","last","take","where","whereNot","select",
-      "joins","order","limit","offset","group","having"])) {
+      "joins","order","limit","offset","group","having", "sql"])) {
       return call_user_func_array([static::get(), $method], $arguments);
     }
 

@@ -9,7 +9,7 @@ class CreatePlayerUsernames extends \DbModel\Migration {
             $t->index("player_id");
 
             $t->string("username");
-            $t->datetime("changed");
+            $t->timestamp("changed");
         });
     }
 

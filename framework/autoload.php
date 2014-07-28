@@ -79,6 +79,13 @@ set_exception_handler(function($e) {
       $errtrace .= implode("", $lines);
 
       $errtrace .= "\r\n\r\nStack Trace: \n\n" . $e->getTraceAsString();
+      if(isset($_SERVER["HTTP_ACCEPT"]) && strpos($_SERVER["HTTP_ACCEPT"], "json") !== false) {
+        die(json_encode([
+          "error" => true,
+          "message" => $err . "\n" . $errmsg,
+          "htmltrace" => $errtrace
+        ]));
+      }
       require 'errhandler/page.php';
   } else {
       print_r($e);

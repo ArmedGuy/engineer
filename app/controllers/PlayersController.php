@@ -11,9 +11,8 @@ class PlayersController extends \Munition\AppController {
         $q->offset(($page-1) * 30);
 
         if(isset($_GET["text"])) {
-          $q->where("guid = ?", $_GET["text"]);
-          $_GET["name"] = $_GET["text"];
-          $_GET["ip"] = $_GET["text"];
+          $t = "%" . $_GET["text"] . "%";
+          $q->where("guid LIKE ? OR latest_username LIKE ? OR latest_ip LIKE ?", $t, $t, $t);
         }
         /* search params */
         if(isset($_GET["name"])) {
@@ -43,5 +42,40 @@ class PlayersController extends \Munition\AppController {
         } else {
             self::render(["json" => null]);
         }
+    }
+
+    function online() {
+      $players = [];
+      $pData = [];
+      $now = date("Y-m-d H:i:s");
+      $events = Event::sql("SELECT * FROM events WHERE type IN ('joined', 'left', 'kicked', 'banned') HAVING TIMEDIFF('$now', submitted) < MAKETIME(0, 30, 0) ORDER BY id DESC");
+      foreach($events as $event) {
+        if($event->type == 'joined' && !in_array($event->player_id, $players)) {
+          $players[] = $event->player_id;
+          $pData[$event->player_id] = [$event->server_id, $event->submitted];
+        }
+      }
+
+      self::render(["json" => array_map(function($p) use ($pData) {
+          $rtn = $p->toArray();
+          $rtn["latest_server"] = Server::find($pData[$p->id][0])->toArray();
+          $rtn["joined"] = $pData[$p->id][1];
+
+          return $rtn;
+        }, Player::where(["id" => $players])->all->toArray())]);
+    }
+
+    function similar($ctx, $params) {
+      $id = $params["player_id"];
+      $player = Player::find($id)->obj();
+      $ips = array_map(function($pip) {
+        return $pip->ip;
+      }, $player->player_ips);
+      if($player != null) {
+        $players = Player::get()->select("players.*")->joins("player_ips")->where(["player_ips.ip" => $ips])->whereNot(["player_id"])->all();
+        self::render(["json" => $players->toRowsArray()]);
+      } else {
+        self::render(["json" => []]);
+      }
     }
 }

@@ -8,7 +8,7 @@ class CreatePlayerIps extends \DbModel\Migration {
             $t->index("player_id");
 
             $t->string("ip");
-            $t->datetime("changed");
+            $t->timestamp("changed");
         });
     }
 
