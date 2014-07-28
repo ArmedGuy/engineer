@@ -1,0 +1,50 @@
+<div class="container">
+    <div class="row">
+        <h1>Admins</h1>
+
+    </div>
+
+    <hr/>
+    <div class="row">
+        <div class="col-md-2">
+            <button class="btn btn-info" ng-click="createNew = !createNew">Create new User</button>
+        </div>
+        <div class="col-md-10">
+            <form class="form-inline" role="form" ng-show="createNew">
+                <div class="form-group">
+                    <label class="sr-only">Username</label>
+                    <input type="text" class="form-control" ng-model="newUsername" autocomplete="off" placeholder="Username"/>
+                </div>
+                <div class="form-group">
+                    <label class="sr-only">Password</label>
+                    <input type="password" class="form-control" ng-model="newPassword" autocomplete="off" placeholder="Password"/>
+                </div>
+                <div class="form-group">
+                    <label class="sr-only">Type</label>
+                    <select class="form-control" ng-model="newType">
+                        <option value="1" selected>Admin</option>
+                        <option value="2">Developer</option>
+                        <option value="3">Autoadmin</option>
+                    </select>
+                </div>
+                <button ng-click="create()" class="btn btn-primary">Create</button>
+            </form>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th><input class="form-control input-sm" type="text" id="filterByText" ng-model="query" placeholder="Name" /></th>
+            <th>Type</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="admin in admins | filter:query">
+                <td>{{ admin.username }}</td>
+                <td>{{ admin.type }}</td>
+                <td><button class="btn btn-warning btn-xs">Change Password</button> <button class="btn btn-danger btn-xs" ng-click="tryDelete(admin)"><i class="fa fa-times"></i></button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
