@@ -36,7 +36,7 @@
                         if(firstLoad != true)
                             e.isNew = true;
                         e.loaded = false;
-                        if($scope.eventTypes.indexOf(e.type) > -1) {
+                        if(e.type in $scope.eventTypes) {
                             e.templateUrl = "app/public/partials/events/event-" + e.type + ".html";
                         } else {
                             e.templateUrl = "app/public/partials/events/event-default.html";

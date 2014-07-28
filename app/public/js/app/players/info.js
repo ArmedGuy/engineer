@@ -21,7 +21,7 @@
                             e.isNew = true;
                         e.loaded = false;
                         e.player = $scope.player;
-                        if($scope.eventTypes.indexOf(e.type) > -1) {
+                        if(e.type in $scope.eventTypes) {
                             e.templateUrl = "app/public/partials/events/event-" + e.type + ".html";
                         } else {
                             e.templateUrl = "app/public/partials/events/event-default.html";
@@ -36,8 +36,6 @@
                     }
                     if(firstLoad)
                         firstLoad = false;
-
-                    $scope.$digest();
                 });
             }
             var updateLoop = $interval(function() {

@@ -1,10 +1,10 @@
-[
-    "joined",
-    "left",
-    "kicked",
-    "banned",
-    "ipchanged",
-    "namechanged",
-    "sayall",
-    "sayteam"
-]
+{
+    "joined": "#228B22",
+    "left": "#BBBBBB",
+    "kicked": "#F39C12",
+    "banned": "#E74C3C",
+    "ipchanged": "#8FD6D0",
+    "namechanged": "#8FD6D0",
+    "sayall": "#C0A16B",
+    "sayteam": "#8FD6D0"
+}

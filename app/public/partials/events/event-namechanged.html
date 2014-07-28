@@ -1,4 +1,4 @@
-<td><div class="event-feed-icon" style="background-color:#8FD6D0;"></div></td>
+<td><div class="event-feed-icon" ng-style="{'background-color': eventTypes[event.type]}"></div></td>
 <td>
     <p>
         <span class="label label-info" ng-show="event.isNew">New</span> <b><a ng-href="#/players/{{event.player.id}}">{{ event.player.latest_username }}</a></b> changed his name from

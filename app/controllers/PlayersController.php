@@ -78,4 +78,57 @@ class PlayersController extends \Munition\AppController {
         self::render(["json" => []]);
       }
     }
+
+
+
+
+
+    /// PLAYERS STATISTICS
+
+    function stats_types($ctx, $params) {
+      $id = $params["player_id"];
+
+      $types = Event::sql("SELECT type, count(type) as numevents FROM events WHERE player_id = $id GROUP BY type");
+      self::render(["json" => $types->toRowsArray()]);
+
+    }
+
+    function stats_servers($ctx, $params) {
+      $id = $params["player_id"];
+
+      $servers = Event::sql("SELECT DISTINCT servers.name AS server_name, COUNT(server_id) AS favweight FROM events JOIN servers on events.server_id = servers.id WHERE player_id = $id GROUP BY server_id");
+      self::render(["json" => $servers->toRowsArray()]);
+    }
+
+    function stats_toaverage($ctx, $params) {
+      $id = $params["player_id"];
+
+      $playerCounts = [];
+      $averageCounts = [];
+
+      $types = Event::select("type")->group("type")->all();
+      foreach($types as $t) {
+        $counts = Event::sql("SELECT player_id, COUNT(type) as numevents FROM events  WHERE type = '{$t->type}' GROUP BY player_id ORDER BY id DESC LIMIT 20000");
+        $averageCounts[$t->type] = $this->calculate_average(array_map(function($c) {
+          return $c->numevents;
+        }, $counts->toArray()));
+
+        $plrCount = Event::select("COUNT(type) as numEvents")->where(["player_id" => $id, "type" => $t->type])->first;
+        $playerCounts[$t->type] = $plrCount->numEvents;
+      }
+
+      self::render(["json" => ["player" => $playerCounts, "average" => $averageCounts]]);
+    }
+
+
+
+  private function calculate_average($arr) {
+    $count = count($arr); //total numbers in array
+    $total = 0;
+    foreach ($arr as $value) {
+      $total = $total + $value; // total value of array numbers
+    }
+    $average = ($total/$count); // get average value
+    return $average;
+  }
 }

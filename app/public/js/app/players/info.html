@@ -75,4 +75,20 @@
             </table>
         </div>
     </div>
+    <hr/>
+    <h3>Statistics</h3>
+    <div class="row" ng-controller="players.info.statistics">
+       <div class="col-md-4" style="text-align: center;">
+           <h4>Events by type</h4>
+           <canvas id="playerEventTypesChart" width="300" height="300"></canvas>
+       </div>
+       <div class="col-md-4" style="text-align: center;">
+           <h4>Favorite Server</h4>
+           <canvas id="playerFavoriteServers" width="300" height="300"></canvas>
+       </div>
+       <div class="col-md-4" style="text-align: center;">
+            <h4>Player vs Average Player</h4>
+            <canvas id="playerAverage" width="300" height="300"></canvas>
+       </div>
+    </div>
 </div>

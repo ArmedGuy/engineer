@@ -3,7 +3,7 @@
 
     angular.module("ptOS").config(['$routeProvider',
         function($routeProvider) {
-            var tmpl = "app/public/js/";
+            var tmpl = "app/public/js/app/";
             $routeProvider.
                 when('/', {
                     templateUrl: tmpl + 'dashboard/index.html',

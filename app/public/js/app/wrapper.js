@@ -14,6 +14,7 @@
 
         $scope.sessionChecked = false;
 
+        function checkSession() {
         $http.get("session.json").
             success(function(data) {
                 if(data.loggedIn == true) {
@@ -24,7 +25,8 @@
                 }
                 $scope.sessionChecked = true;
             });
-
+        }
+        checkSession();
         $scope.login = function() {
             $scope.errorMessage = "";
             if($scope.loggedIn == true)
@@ -32,10 +34,9 @@
             $http.post("login.json", { username: $scope.username, password: $scope.password }).
                 success(function(data) {
                     if(data.loggedIn == true) {
-                        $scope.loggedIn = true;
                         $scope.username = data.username;
                         $scope.password = "";
-                        $route.reload();
+                        checkSession();
                     } else {
                         $scope.errorMessage = data.errorMessage;
                         $scope.loggedIn = false;
