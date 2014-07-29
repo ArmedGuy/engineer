@@ -1,4 +1,5 @@
 <?php
+use GeoIp2\Database\Reader;
 class SiteController extends \Munition\AppController {
     function index() {
         self::render(["template" => "page"]);
@@ -24,5 +25,13 @@ class SiteController extends \Munition\AppController {
         } else {
             self::render(["json" => ["loggedIn" => false]]);
         }
+    }
+
+    function ip_lookup($ctx, $params) {
+      $ip = $params["ip_address"];
+
+      $reader = new Reader('./external/GeoLite2-City.mmdb');
+      $record = $reader->city($ip);
+      self::render(["json" => $record]);
     }
 }

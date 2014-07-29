@@ -88,7 +88,7 @@ class PlayersController extends \Munition\AppController {
     function stats_types($ctx, $params) {
       $id = $params["player_id"];
 
-      $types = Event::sql("SELECT type, count(type) as numevents FROM events WHERE player_id = $id GROUP BY type");
+      $types = Event::sql("SELECT type, count(type) as numevents FROM events WHERE player_id = $id AND type NOT IN ('sayall','sayteam') GROUP BY type");
       self::render(["json" => $types->toRowsArray()]);
 
     }
@@ -106,7 +106,7 @@ class PlayersController extends \Munition\AppController {
       $playerCounts = [];
       $averageCounts = [];
 
-      $types = Event::select("type")->group("type")->all();
+      $types = Event::select("type")->group("type")->whereNot(["type" => ["sayall", "sayteam"]])->all();
       foreach($types as $t) {
         $counts = Event::sql("SELECT player_id, COUNT(type) as numevents FROM events  WHERE type = '{$t->type}' GROUP BY player_id ORDER BY id DESC LIMIT 20000");
         $averageCounts[$t->type] = $this->calculate_average(array_map(function($c) {
@@ -118,6 +118,18 @@ class PlayersController extends \Munition\AppController {
       }
 
       self::render(["json" => ["player" => $playerCounts, "average" => $averageCounts]]);
+    }
+
+    function stats_hours($ctx, $params) {
+      $id = $params["player_id"];
+      $hours = [];
+      for($i = 0; $i < 24; $i++) {
+        $hours[$i] = 0;
+      }
+      foreach(Event::sql("SELECT HOUR(submitted) as hourofday, COUNT(submitted) as numevents FROM events WHERE player_id = $id GROUP BY hourofday")->toArray() as $h) {
+        $hours[($h->hourofday)] = (int)($h->numevents);
+      }
+      self::render(["json" => $hours]);
     }
 
 

@@ -1,0 +1,16 @@
+{
+    "name": "armedguy/ptOS",
+    "description": "Player Tracker System",
+    "minimum-stability": "stable",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "ArmedGuy",
+            "email": "johan.jatko@outlook.com"
+        }
+    ],
+    "require": {
+        "geoip2/geoip2": "v0.7.0",
+        "ircmaxell/password-compat": "1.0.3"
+    }
+}

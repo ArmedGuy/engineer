@@ -1,14 +1,38 @@
 (function() {
     "use strict";
 
-    angular.module("ptOS").controller("players.info", ["$scope", "$routeParams", "Player", "Event", "$interval",
-        function($scope, $routeParams, Player, Event, $interval) {
+    angular.module("ptOS").controller("players.info", ["$scope", "$routeParams", "Player", "Event", "$interval", "$http",
+        function($scope, $routeParams, Player, Event, $interval, $http) {
             $scope.events = [];
-
-            var playerId = $routeParams.playerId;
+            $scope.lookupLocation = "";
+            $scope.lookupCountry = "";
+            var playerId = $routeParams.playerId,
+                showAllPlayerNames = false,
+                showAllPlayerIps = false;
             $scope.player = Player.get({ id: playerId }, function() {
+                updatePlayerNamesAndIps();
                 loadEvents();
+
+                $http.get("iplookup/" + $scope.player.latest_ip)
+                    .success(function(ipinfo) {
+                        var parts = [];
+                        if("city" in ipinfo) {
+                            parts.push(ipinfo.city.names.en);
+                        }
+                        if("country" in ipinfo) {
+                            parts.push(ipinfo.country.names.en);
+                            $scope.lookupCountry = ipinfo.country.iso_code.toLowerCase();
+                        }
+                        if("continent" in ipinfo) {
+                            parts.push(ipinfo.continent.names.en);
+                        }
+                        $scope.lookupLocation = parts.join(", ");
+                    });
             });
+
+            $scope.playerIps = [];
+            $scope.playerNames = [];
+
             // Player event stream
             var firstLoad = true;
             var eventQueryParams = { player_id: playerId, noPlayer: true, max: 10 };
@@ -38,6 +62,21 @@
                         firstLoad = false;
                 });
             }
+
+            var updatePlayerNamesAndIps = function() {
+                if(showAllPlayerIps || $scope.player.ips.length < 5) {
+                    $scope.playerIps = $scope.player.ips;
+                } else {
+                    $scope.playerIps = $scope.player.ips.slice(0, 5);
+                }
+
+                if(showAllPlayerNames || $scope.player.names.length < 5) {
+                    $scope.playerNames = $scope.player.names;
+                } else {
+                    $scope.playerNames = $scope.player.names.slice(0, 5);
+                }
+            }
+
             var updateLoop = $interval(function() {
                 for(var i in $scope.events) {
                     $scope.events[i].isNew = false;
@@ -48,6 +87,7 @@
                     eventQueryParams.after = 0;
                 }
                 Player.get({ id: playerId }, function(data) {
+                    updatePlayerNamesAndIps();
                     $scope.player = data;
                     loadEvents();
                     eventQueryParams.after = 0;

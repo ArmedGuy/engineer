@@ -12,6 +12,10 @@
                     <td>Latest IP</td>
                     <td>{{ player.latest_ip }}</td>
                 </tr>
+                <tr ng-if="lookupLocation.length>0">
+                    <td>Location</td>
+                    <td><img ng-src="app/public/images/{{lookupCountry}}.png" alt="Country"/> {{ lookupLocation }}</td>
+                </tr>
                 <tr ng-if="events.length>0">
                     <td>Last Seen</td>
                     <td>{{ events[0].submitted | timeAgo }} on {{ events[0].server.name }}</td>
@@ -27,7 +31,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="pn in player.names">
+                    <tr ng-repeat="pn in playerNames">
                         <td>{{ pn.name }}</td>
                         <td>{{ pn.changed | timeAgo }}</td>
                     </tr>
@@ -43,7 +47,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="pi in player.ips">
+                <tr ng-repeat="pi in playerIps">
                     <td>{{ pi.ip }}</td>
                     <td>{{ pi.changed | timeAgo }}</td>
                 </tr>
@@ -89,6 +93,10 @@
        <div class="col-md-4" style="text-align: center;">
             <h4>Player vs Average Player</h4>
             <canvas id="playerAverage" width="300" height="300"></canvas>
+       </div>
+       <div class="col-md-8" style="text-align: center;">
+           <h4>Player Activity - Day</h4>
+           <canvas id="playerActivityDay" width="600" height="300"></canvas>
        </div>
     </div>
 </div>

@@ -38,7 +38,7 @@
                         var color = getRandomColor();
                         data.push({
                             label: server.server_name,
-                            value: server.favweight,
+                            value: parseInt(server.favweight),
                             color: color,
                             highlight: color
                         });
@@ -85,6 +85,29 @@
                         labels: labels,
                         datasets: datasets
                     });
+                });
+
+            $http.get("players/" + playerId + "/stats/hours.json")
+                .success(function(hours) {
+                    var labels = [];
+                    for(var i in hours) {
+                        labels.push("" + i);
+                    }
+                    var data = {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: "Hours",
+                                fillColor: "rgba(151,187,205,0.5)",
+                                strokeColor: "rgba(151,187,205,0.8)",
+                                highlightFill: "rgba(151,187,205,0.75)",
+                                highlightStroke: "rgba(151,187,205,1)",
+                                data: hours
+                            }
+                        ]
+                    }
+                    var ctx = $window.document.getElementById("playerActivityDay").getContext("2d");
+                    var chart = new Chart(ctx).Bar(data);
                 })
         }]);
 })();
