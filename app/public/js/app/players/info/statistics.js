@@ -60,28 +60,28 @@
                     }
                     var datasets = [
                         {
-                            label: "Player",
+                            label: "Average",
                             fillColor: "rgba(220,220,220,0.2)",
                             strokeColor: "rgba(220,220,220,1)",
                             pointColor: "rgba(220,220,220,1)",
                             pointStrokeColor: "#fff",
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(220,220,220,1)",
-                            data: playerValues
+                            data: averageValues
                         },
                         {
-                            label: "Average",
+                            label: "Player",
                             fillColor: "rgba(151,187,205,0.2)",
                             strokeColor: "rgba(151,187,205,1)",
                             pointColor: "rgba(151,187,205,1)",
                             pointStrokeColor: "#fff",
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(151,187,205,1)",
-                            data: averageValues
+                            data: playerValues
                         }
                     ];
                     var ctx = $window.document.getElementById("playerAverage").getContext("2d");
-                    var char = new Chart(ctx).Radar({
+                    var chart = new Chart(ctx).Radar({
                         labels: labels,
                         datasets: datasets
                     });

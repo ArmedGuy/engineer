@@ -9,8 +9,12 @@
 
         <?php Scripts::render("bootstrap"); ?>
         <?php Scripts::render("app"); ?>
+        <script type="text/javascript"
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBlAFaClq2z5dfx65atxgn185orpm2Uxe4">
+        </script>
 
-        <title>ptOS</title>
+
+      <title>ptOS</title>
     </head>
     <body ng-controller="wrapper">
         <nav class="navbar navbar-default navbar-static-top" role="navigation">

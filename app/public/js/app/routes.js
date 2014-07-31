@@ -25,6 +25,10 @@
                     templateUrl: tmpl + 'admins/list.html',
                     controller: 'admins.list'
                 }).
+                when('/servers/:serverId', {
+                    templateUrl: tmpl + 'servers/info.html',
+                    controller: 'servers.info'
+                }).
                 otherwise({
                     redirectTo: '/'
                 });

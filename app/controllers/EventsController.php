@@ -17,12 +17,13 @@ class EventsController extends \Munition\AppController {
         }
 
         if(isset($_GET["after"])) {
-            $q->where("id > ?", $_GET["after"]);
+            $q->where("events.id > ?", $_GET["after"]);
         }
 
         /* search params */
         if(isset($_GET["server"])) {
-          $q->joins("servers")->where("servers.name LIKE ?", "%" . $_GET["server"] . "%");
+          $s = "%" . $_GET["server"] . "%";
+          $q->joins("JOIN servers ON servers.id = events.server_id")->where("servers.name LIKE ? OR servers.guid LIKE ?", $s, $s);
         }
         if(isset($_GET["type"])) {
           $q->where(["type" => $_GET['type']]);

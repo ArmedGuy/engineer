@@ -14,7 +14,10 @@
                 </tr>
                 <tr ng-if="lookupLocation.length>0">
                     <td>Location</td>
-                    <td><img ng-src="app/public/images/{{lookupCountry}}.png" alt="Country"/> {{ lookupLocation }}</td>
+                    <td>
+                        <img ng-src="app/public/images/{{lookupCountry}}.png" alt="Country"/> {{ lookupLocation }}
+                        <img ng-src="iplocation/{{player.latest_ip}}" style="width: 100%; height: auto;" alt="Location" />
+                    </td>
                 </tr>
                 <tr ng-if="events.length>0">
                     <td>Last Seen</td>

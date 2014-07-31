@@ -9,6 +9,9 @@ $r->scope("ptOS", function($r) {
 
   $r->pattern("ip_address", "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b");
   $r->get("/iplookup/:ip_address", "site#ip_lookup");
+  $r->get("/iplocation/:ip_address", "site#ip_location");
+
+  $r->post("/iplookup/", "site#ip_lookup_bulk");
 
 
   $r->get("/players/online", "players#online");
@@ -28,4 +31,9 @@ $r->scope("ptOS", function($r) {
   $r->resources("events");
   $r->resources("admins");
   $r->resources("servers");
+
+  $r->pattern("server_id", "[0-9]+");
+  $r->scope("servers", function($r) {
+    $r->get("/:server_id/distribution", "servers#distribution");
+  });
 });

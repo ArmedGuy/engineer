@@ -15,6 +15,10 @@ class ptOS extends \Munition\App {
         \DbModel\Base::$default_db = $this->db->main;
         \DbModel\Migration::register_cli_hooks($this->cli);
 
+
+        $this->memcached = new Memcache();
+        $this->memcached->connect("localhost", 11211);
+
         Scripts::register("bootstrap", [
           "app/public/js/jquery.min.js",
           "app/public/js/angular.min.js",
