@@ -1,66 +1,71 @@
 <?php
-class EventsController extends \Munition\AppController {
-    function index() {
-        // show latest events
+class EventsController extends BaseApiController {
 
-        $q = Event::get();
-        $max = isset($_GET["max"]) ? (int)$_GET["max"] : 30;
-        $q->limit($max);
-        $q->order("id DESC");
-        $q->select("events.*");
+  function __construct() {
+    parent::__construct();
+    $this->beforeAction("static::cache_request", ["not" => ["index"]]);
+  }
+  function index() {
+      // show latest events
 
-        $page = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
-        $q->offset(($page-1) * $max);
+      $q = Event::get();
+      $max = isset($_GET["max"]) ? (int)$_GET["max"] : 30;
+      $q->limit($max);
+      $q->order("id DESC");
+      $q->select("events.*");
 
-        if(isset($_GET["player_id"])) {
-            $q->where(["player_id" => $_GET["player_id"]]);
-        }
+      $page = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
+      $q->offset(($page-1) * $max);
 
-        if(isset($_GET["after"])) {
-            $q->where("events.id > ?", $_GET["after"]);
-        }
+      if(isset($_GET["player_id"])) {
+          $q->where(["player_id" => $_GET["player_id"]]);
+      }
 
-        /* search params */
-        if(isset($_GET["server"])) {
-          $s = "%" . $_GET["server"] . "%";
-          $q->joins("JOIN servers ON servers.id = events.server_id")->where("servers.name LIKE ? OR servers.guid LIKE ?", $s, $s);
-        }
-        if(isset($_GET["type"])) {
-          $q->where(["type" => $_GET['type']]);
-        }
-        if(isset($_GET["data"])) {
-          $q->joins("event_data")->where("event_data.value LIKE ?", "%" . $_GET["data"] . "%");
-        }
-        /* end search params */
+      if(isset($_GET["after"])) {
+          $q->where("events.id > ?", $_GET["after"]);
+      }
 
-        $events = array_map(function($a) {
-            $rtn = $a->toArray();
-            // get event data
-            $rtn["data"] = [];
-            $data = array_map(function($ed) {
-                return array_diff_key($ed->toArray(), ["event_id" => ""]);
-            }, EventData::where(["event_id" => $a->id])->all->toArray());
-            foreach($data as $d) {
-                $rtn["data"][$d["key"]] = $d["value"];
-            }
-            // get player and server
-            if(!isset($_GET["noPlayer"]))
-                $rtn["player"] = Player::find($a->player_id)->obj()->serialize();
-            $rtn["server"] = Server::find($a->server_id)->obj()->serialize();
+      /* search params */
+      if(isset($_GET["server"])) {
+        $s = "%" . $_GET["server"] . "%";
+        $q->joins("JOIN servers ON servers.id = events.server_id")->where("servers.name LIKE ? OR servers.guid LIKE ?", $s, $s);
+      }
+      if(isset($_GET["type"])) {
+        $q->where(["type" => $_GET['type']]);
+      }
+      if(isset($_GET["data"])) {
+        $q->joins("event_data")->where("event_data.value LIKE ?", "%" . $_GET["data"] . "%");
+      }
+      /* end search params */
 
-            return $rtn;
-        }, $q->all()->toArray());
+      $events = array_map(function($a) {
+          $rtn = $a->toArray();
+          // get event data
+          $rtn["data"] = [];
+          $data = array_map(function($ed) {
+              return array_diff_key($ed->toArray(), ["event_id" => ""]);
+          }, EventData::where(["event_id" => $a->id])->all->toArray());
+          foreach($data as $d) {
+              $rtn["data"][$d["key"]] = $d["value"];
+          }
+          // get player and server
+          if(!isset($_GET["noPlayer"]))
+              $rtn["player"] = Player::find($a->player_id)->obj()->serialize();
+          $rtn["server"] = Server::find($a->server_id)->obj()->serialize();
 
-        self::render(["json" => $events]);
+          return $rtn;
+      }, $q->all()->toArray());
 
-    }
-    function show($ctx, $params) {
-        $id = $params["event_id"];
-        $event = Event::find($id)->obj();
-        if($event != null) {
-            self::render(["json" => $event->serialize()]);
-        } else {
-            self::render(["json" => null]);
-        }
-    }
+      self::render(["json" => $events]);
+
+  }
+  function show($ctx, $params) {
+      $id = $params["event_id"];
+      $event = Event::find($id)->obj();
+      if($event != null) {
+          self::render(["json" => $event->serialize()]);
+      } else {
+          self::render(["json" => null]);
+      }
+  }
 }

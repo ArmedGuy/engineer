@@ -1,5 +1,9 @@
 <?php
-class AdminsController extends \Munition\AppController {
+class AdminsController extends BaseApiController {
+  function __construct() {
+    parent::__construct();
+    $this->beforeAction("static::cache_request", ["not" => []]);
+  }
   function index() {
       $admins = array_map(function($s) {
           return $s->toArray();
