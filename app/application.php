@@ -4,7 +4,13 @@ class ptOS extends \Munition\App {
         parent::configure("./app/");
 
         $r = $this->router;
-        include 'routes.php';
+        if(MUNITION_WEBPATH != "/") {
+          $r->scope(str_replace("/","", MUNITION_WEBPATH), function($r) {
+            include 'routes.php';
+          });
+        } else {
+          include 'routes.php';
+        }
 
         $this->db = new \DbModel\AppDbManager();
         $this->db->using("main" , [
